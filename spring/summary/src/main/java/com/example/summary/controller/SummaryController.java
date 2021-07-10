@@ -1,6 +1,7 @@
 package com.example.summary.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +24,12 @@ public class SummaryController {
 	SummaryInterface summaryInterface;
 	
 	@GetMapping("/getsummary")
-	public ResponseEntity<List<Summary>> getDescription(@RequestHeader(required=true)String key)
+	public ResponseEntity<List<Summary>> getDescriptionById(@RequestHeader(required=true)String key)
 	{
 		
 		List<Summary> summary=summaryInterface.findAll();
-		return new ResponseEntity<>(summary,HttpStatus.OK);
+		List<Summary> result=summary.stream().filter(item ->item.getKey().equalsIgnoreCase(key)).collect(Collectors.toList());
+		return new ResponseEntity<>(result,HttpStatus.OK);
 	}
 	
 	@PostMapping("/saveDetails")
