@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Bank Helper</title>
+		<script src="https://www.w3schools.com/lib/w3.js"></script>
+	</head>
+	<body>
+	    <div id="bankheader" w3-include-html="{{url_for('header')}}" style="height:50px;display: table;width: 100%; background-image:linear-gradient(#8FBC8F,white);table-layout: fixed;border-spacing: 5px;"></div>
+        <br><br><br><br><br><br><br><br>    
+		<div id="username" style="margin-left: 540px;">
+			<label for="users" style="left:60px;">username</label>
+			<input type="text" id="users" style="left:90px;">
+			<input type="submit" value="Submit" style="left:130px;" onClick="routeMethod()">
+		</div>
+		<div id="bankfooter" w3-include-html="{{url_for('footer')}}" style="position:absolute;overflow:hidden;bottom:0.1em;left:2px;right:5px;width:100%;background-color:black;color:white;font-size:0.85em;text-align:center;"></div>
+		<script>
+		
+		function routeMethod() {
+			  var valuser = document.getElementById("users").value
+	          let xhr=new XMLHttpRequest();
+	          let url="https://n91fn13a43.execute-api.us-east-2.amazonaws.com/test/Router-Lambda";
+	          xhr.open("GET",url,true);
+	          //xhr.setRequestHeader("Content-Type","application/json");
+	          xhr.setRequestHeader("Access-Control-Allow-Origin","*");
+	          xhr.setRequestHeader("username",valuser);
+	          xhr.onreadystatechange = function(){
+	        	  if(xhr.readyState ===4 && xhr.status === 200){
+	        		  console.log(this.responseText.replace("\"",""));
+	        		  var valresp=this.responeText
+	        		  console.log(valresp)
+	        		  if (this.responseText.replaceAll("\"","")== "signlanguage")
+	  				  { 
+	        		  console.log("inside signlanguage")  
+	  				  window.location.href = "http://localhost:5001/signlanguage";
+	  				  }  
+	  			      else if (this.responseText.replaceAll("\"","")== "audio")
+	  				  {
+	  			       console.log("inside audio")
+	  			       window.location.href = "https://stt2-app-36bq6zmzmq-uc.a.run.app/";
+	  			       }   
+	  				  }
+	        	  
+	          };
+	          
+	          //console.log(jdata);
+	          xhr.send();
+		}
+
+		</script>
+		<script>
+			w3.includeHTML();
+		</script>
+	</body>
+</html>

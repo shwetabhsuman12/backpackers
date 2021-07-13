@@ -1,0 +1,97 @@
+<html>
+<head>
+    <title>Sign Language</title>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.js"></script>
+</head>
+
+<body>
+   <div style="width: 100%;">
+    <div id="bankheader" w3-include-html="{{url_for('header')}}" style="height:50px;display: table;width: 100%; background-image:linear-gradient(#8FBC8F,white);table-layout: fixed;border-spacing: 5px;"></div>>
+    <div id="bodydisplay">
+       <div id="respdisp"><p id="resp"></p></div>
+       <div id="camerasec">
+           <div id="camerachat" style="height:100px;margin-left:80%; text-align:left;">
+    	      <div id="camera" style="height:auto;width:auto;"></div>
+    	          <br>
+                  <input type="button" value="Start" id="sbtPic" onclick="callSnapShot()" />
+                  <input type="button" value="Finish" id="fbtPic" onclick="sendImages()" />
+               </div>
+               <br><br><br>
+               <div id="questions" style="height:890px;margin-left:80%; text-align:left;">
+                     <h3>Question Asked:</h3>
+               		 <p id="snapShot"></p>
+               </div>
+           </div>
+      </div>  
+   </div>
+    <div id="bankfooter" w3-include-html="{{url_for('footer')}}" style="position:absolute;overflow:hidden;bottom:0.1em;left:2px;right:5px;width:100%;background-color:black;color:white;font-size:0.85em;text-align:center;"></div>
+    <!--FOR THE SNAPSHOT-->
+    
+  </div>
+</body>
+
+<script>
+    let imgvalue=""
+    let icounter=1
+    let data=[]
+    // CAMERA SETTINGS.
+    Webcam.set({
+        width: 300,
+        height: 190,
+        crop_width: 100,
+        crop_height:100,
+        image_format: 'jpg',
+        jpg_quality: 100
+    });
+    Webcam.attach('#camera');
+
+    // SHOW THE SNAPSHOT.
+     takeSnapShot = function () {
+        Webcam.snap(function (data_uri) {
+        	 console.log("inside snapshot taking")
+        	 document.getElementById('snapShot').innerHTML='<img src="'+data_uri+'"/>'
+             data.push(data_uri)
+             imgvalue=data_uri
+        });
+    }
+    
+    iterateSnap = function(){
+            console.log("taking snapshot")
+            setTimeout(takeSnapShot,5000)
+        
+     }
+     function callSnapShot(valueSnap) {
+                 document.getElementById('snapShot').innerHTML = ""
+		iterateSnap() 
+    }
+
+    sendImages = function(){
+          let xhr=new XMLHttpRequest();
+          xhr.responseType = 'json';
+          let url="http://localhost:5001/images"
+          xhr.open("POST",url,true)
+          xhr.setRequestHeader("Content-Type","application/json");
+          xhr.setRequestHeader("Access-Control-Allow-Origin","*");
+          xhr.onreadystatechange = function(){
+        	  if(xhr.status === 200){
+        		  //console.log(this.responseText);
+        		  console.log(xhr.response.desc);
+        		  jsonresp=xhr.response
+        		  document.getElementById('resp').innerHTML=jsonresp["desc"]
+        		  
+        	  }
+          };
+          console.log(imgvalue)
+          console.log(imgvalue.indexOf("se64,"))
+          
+          var jdata=JSON.stringify({"images":imgvalue});
+          //console.log(jdata);
+          xhr.send(jdata);
+          
+     }
+</script>
+	<script>
+		w3.includeHTML();
+	</script>
+</html>
