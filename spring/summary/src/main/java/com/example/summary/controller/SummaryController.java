@@ -24,12 +24,21 @@ public class SummaryController {
 	SummaryInterface summaryInterface;
 	
 	@GetMapping("/getsummary")
-	public ResponseEntity<List<Summary>> getDescriptionById(@RequestHeader(required=true)String key)
+	public ResponseEntity<Summary> getDescriptionById(@RequestHeader(required=true)String key)
 	{
 		
 		List<Summary> summary=summaryInterface.findAll();
-		List<Summary> result=summary.stream().filter(item ->item.getKey().equalsIgnoreCase(key)).collect(Collectors.toList());
-		return new ResponseEntity<>(result,HttpStatus.OK);
+                Summary temp=null;
+		for(int i=0;i < summary.size();i++)
+                {
+			if (summary.get(i).getKey().equalsIgnoreCase(key)){
+                          temp=summary.get(i);
+                          System.out.println(temp.toString());
+                          break;
+                        }
+                }
+		//List<Summary> result=summary.stream().filter(item ->item.getKey().equalsIgnoreCase(key)).collect(Collectors.toList());
+		return new ResponseEntity<>(temp,HttpStatus.OK);
 	}
 	
 	@PostMapping("/saveDetails")
