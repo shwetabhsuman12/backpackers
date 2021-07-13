@@ -1,4 +1,0 @@
-FROM gcpprofileimg
-USER root
-WORKDIR /app
-COPY requests.json /app
